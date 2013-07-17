@@ -83,17 +83,16 @@ int mouseHoldCount[NUM_INPUTS]; // used to store mouse movement hold data
 // Pin Numbers
 // input pin numbers for kickstarter production board
 int pinNumbers[NUM_INPUTS] = {
-  12, 8, 13, 15, 7, 6,     // top of makey makey board
-  5, 4, 3, 2, 1, 0,        // left side of female header, KEBYBOARD
-  23, 22, 21, 20, 19, 18   // right side of female header, MOUSE
+  0,1,2,3,4,5,6, 7,8,9,10,11       // 
+  18,19,20,21,22,23   // 
 };
 
 // input status LED pin numbers
-const int inputLED_a = 9;
-const int inputLED_b = 10;
-const int inputLED_c = 11;
-const int outputK = 14;
-const int outputM = 16;
+//const int inputLED_a = 9;
+//const int inputLED_b = 10;
+//const int inputLED_c = 11;
+const int outputK = 13;
+const int outputM = 13;
 byte ledCycleCounter = 0;
 
 // timing
@@ -156,16 +155,16 @@ void initializeArduino() {
    DEactivate the internal pull-ups, since we're using external resistors */
   for (int i=0; i<NUM_INPUTS; i++)
   {
-    pinMode(pinNumbers[i], INPUT);
-    digitalWrite(pinNumbers[i], LOW);
+    pinMode(pinNumbers[i], INPUT_PULLUP);
+//    digitalWrite(pinNumbers[i], LOW);
   }
 
-  pinMode(inputLED_a, INPUT);
-  pinMode(inputLED_b, INPUT);
-  pinMode(inputLED_c, INPUT);
-  digitalWrite(inputLED_a, LOW);
-  digitalWrite(inputLED_b, LOW);
-  digitalWrite(inputLED_c, LOW);
+  //pinMode(inputLED_a, INPUT);
+  //pinMode(inputLED_b, INPUT);
+  //pinMode(inputLED_c, INPUT);
+  //digitalWrite(inputLED_a, LOW);
+  //digitalWrite(inputLED_b, LOW);
+  //digitalWrite(inputLED_c, LOW);
 
   pinMode(outputK, OUTPUT);
   pinMode(outputM, OUTPUT);
@@ -514,7 +513,7 @@ void addDelay() {
 #endif
 
 }
-
+/*
 ///////////////////////////
 // CYCLE LEDS
 ///////////////////////////
@@ -652,7 +651,7 @@ void danceLeds()
     delay(delayTime2);    
   }
 }
-
+*/
 void updateOutLEDs()
 {
   boolean keyPressed = 0;

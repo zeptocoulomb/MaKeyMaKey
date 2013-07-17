@@ -37,13 +37,15 @@
 #define NUM_INPUTS       18    // 6 on the front + 12 on the back
 //#define TARGET_LOOP_TIME 694   // (1/60 seconds) / 24 samples = 694 microseconds per sample 
 //#define TARGET_LOOP_TIME 758  // (1/55 seconds) / 24 samples = 758 microseconds per sample 
-#define TARGET_LOOP_TIME 744  // (1/56 seconds) / 24 samples = 744 microseconds per sample 
-
+//#define TARGET_LOOP_TIME 744  // (1/56 seconds) / 24 samples = 744 microseconds per sample 
+#define TARGET_LOOP_TIME 3*744  //slow it down for the benefit of the scroll wheel
 // id numbers for mouse movement inputs (used in settings.h)
 #define MOUSE_MOVE_UP       -1 
 #define MOUSE_MOVE_DOWN     -2
-#define MOUSE_MOVE_LEFT     -3
+#define MOUSE_MOVE_LEFT    -3
 #define MOUSE_MOVE_RIGHT    -4
+#define MOUSE_SCROLL_UP     -5
+#define MOUSE_SCROLL_DOWN   -6
 
 #include "settings.h"
 
@@ -83,7 +85,7 @@ int mouseHoldCount[NUM_INPUTS]; // used to store mouse movement hold data
 // Pin Numbers
 // input pin numbers for kickstarter production board
 int pinNumbers[NUM_INPUTS] = {
-  0,1,2,3,4,5,6, 7,8,9,10,11  ,     // 
+  0,1,2,3,4,5,6, 7,8,9,10,11 ,      // 
   18,19,20,21,22,23   // 
 };
 
@@ -124,7 +126,7 @@ void setup()
 {
   initializeArduino();
   initializeInputs();
- // danceLeds();
+  //danceLeds();
 }
 
 ////////////////////
@@ -138,7 +140,7 @@ void loop()
   updateInputStates();
   sendMouseButtonEvents();
   sendMouseMovementEvents();
-  //cycleLEDs();
+ // cycleLEDs();
   updateOutLEDs();
   addDelay();
 }
@@ -414,8 +416,12 @@ void sendMouseMovementEvents() {
   byte left = 0;
   byte down = 0;
   byte up = 0;
+  byte scrollDown = 0;
+  byte scrollUp = 0;
   byte horizmotion = 0;
   byte vertmotion = 0;
+  byte scrollmotion = 0;
+  
 
   mouseMovementCounter++;
   mouseMovementCounter %= MOUSE_MOTION_UPDATE_INTERVAL;
@@ -440,6 +446,12 @@ void sendMouseMovementEvents() {
           if (inputs[i].keyCode == MOUSE_MOVE_RIGHT) {
             right=constrain(1+mouseHoldCount[i]/MOUSE_RAMP_SCALE, 1, MOUSE_MAX_PIXELS);
           }  
+          if (inputs[i].keyCode == MOUSE_SCROLL_UP) {
+            scrollUp=constrain(1+mouseHoldCount[i]/MOUSE_RAMP_SCALE, 1, MOUSE_MAX_PIXELS);
+          }  
+          if (inputs[i].keyCode == MOUSE_SCROLL_DOWN) {
+            scrollDown=constrain(1+mouseHoldCount[i]/MOUSE_RAMP_SCALE, 1, MOUSE_MAX_PIXELS);
+          } 
         }
       }
     }
@@ -482,11 +494,22 @@ void sendMouseMovementEvents() {
         vertmotion = -up; // up yes, down no
       }
     }
+    
+  
     // now move the mouse
     if( !((horizmotion == 0) && (vertmotion==0)) )
     {
       Mouse.move(horizmotion * PIXELS_PER_MOUSE_STEP, vertmotion * PIXELS_PER_MOUSE_STEP);
     }
+    
+    if(  (scrollUp > scrollDown) )
+    {
+      Mouse.move(0,0, -1);
+    }
+       if (scrollDown > scrollUp)
+    {
+      Mouse.move(0,0,  1);
+    }    
   }
 }
 
@@ -699,9 +722,4 @@ void updateOutLEDs()
     RXLED0;
   }
 }
-
-
-
-
-
 

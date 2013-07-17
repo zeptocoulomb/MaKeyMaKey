@@ -83,7 +83,7 @@ int mouseHoldCount[NUM_INPUTS]; // used to store mouse movement hold data
 // Pin Numbers
 // input pin numbers for kickstarter production board
 int pinNumbers[NUM_INPUTS] = {
-  0,1,2,3,4,5,6, 7,8,9,10,11       // 
+  0,1,2,3,4,5,6, 7,8,9,10,11  ,     // 
   18,19,20,21,22,23   // 
 };
 
@@ -124,7 +124,7 @@ void setup()
 {
   initializeArduino();
   initializeInputs();
-  danceLeds();
+ // danceLeds();
 }
 
 ////////////////////
@@ -138,7 +138,7 @@ void loop()
   updateInputStates();
   sendMouseButtonEvents();
   sendMouseMovementEvents();
-  cycleLEDs();
+  //cycleLEDs();
   updateOutLEDs();
   addDelay();
 }
